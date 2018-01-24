@@ -9,7 +9,7 @@ void main()
 	std::vector<Organism*> listOfOrganisms;
 	coordinates size(28,28,28);
 
-	int chance = rand() % 10 + 25;
+	int chance = rand() % 10 + 300;
 	while (chance)
 	{
 		coordinates posOfPlankton;
@@ -19,9 +19,10 @@ void main()
 		posOfPlankton.first = rand() % size.first + 0;
 		posOfPlankton.second = rand() % size.second + 0;
 		posOfPlankton.third = rand() % size.third + 0;
+		bool sex = rand() % 2;
 		try
 		{
-			listOfOrganisms.push_back(new Plankton(posOfPlankton, radOfDisp, radOfView, lifeTime));
+			listOfOrganisms.push_back(new Plankton(posOfPlankton, radOfDisp, radOfView, lifeTime,sex));
 		}
 		catch (Exception &ex)
 		{
@@ -30,7 +31,7 @@ void main()
 		chance--;
 	}
 
-	chance = rand() % 4 + 20;
+	chance = rand() % 4 + 50;
 	while (chance)
 	{
 		coordinates posOfHerbivore;
@@ -38,12 +39,14 @@ void main()
 		int radOfDisp = rand() % 2 + 4;
 		int lifeTime = rand() % 10 + 20;
 		int eattime = rand() % 2 + 7;
+		bool sex = rand() % 2;
+		std::cout << sex << std::endl;
 		posOfHerbivore.first = rand() % size.first + 0;
 		posOfHerbivore.second = rand() % size.second + 0;
 		posOfHerbivore.third = rand() % size.third + 0;
 		try
 		{
-			listOfOrganisms.push_back(new Herbivore(posOfHerbivore, radOfDisp, radOfView, lifeTime, eattime));
+			listOfOrganisms.push_back(new Herbivore(posOfHerbivore, radOfDisp, radOfView, lifeTime, eattime,sex));
 		}
 		catch (Exception &ex)
 		{
@@ -52,7 +55,7 @@ void main()
 		chance--;
 	}
 	
-	chance = rand() % 3 + 10;
+	chance = rand() % 3 + 20;
 	while (chance)
 	{
 		coordinates posOfPredators;
@@ -60,12 +63,13 @@ void main()
 		int radOfDisp = rand() % 1 + 6;
 		int lifeTime = rand() % 5 + 15;
 		int eattime = rand() % 3 + 4;
+		bool sex = rand() % 2;
 		posOfPredators.first = rand() % size.first + 0;
 		posOfPredators.second = rand() % size.second + 0;
 		posOfPredators.third = rand() % size.third + 0;
 		try
 		{
-			listOfOrganisms.push_back(new Predator(posOfPredators, radOfDisp, radOfView, lifeTime, eattime));
+			listOfOrganisms.push_back(new Predator(posOfPredators, radOfDisp, radOfView, lifeTime, eattime,sex));
 		}
 		catch (Exception &ex)
 		{
@@ -181,9 +185,7 @@ void main()
 
 			aq.show();
 			window.display();
-			
-			
-			
+
 		}
 	}
 	catch (Exception &ex)

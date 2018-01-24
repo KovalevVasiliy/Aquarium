@@ -3,14 +3,15 @@
 
 
 Herbivore::Herbivore(coordinates location_, int radOfDisp_, int radOfview_,
-	int lifeTime_, int eatTime_) :Fish(location_, radOfDisp_, radOfview_,
-		lifeTime_, eatTime_, 6, coefOfHerbivore,&sprites.HerbivoreMove)
+	int lifeTime_, int eatTime_,bool sex_) :Fish(location_, radOfDisp_, radOfview_,
+		lifeTime_, eatTime_, 6, coefOfHerbivore,sex,&sprites.HerbivoreMove)
 {
 	if ((radOfView > 8) || (radOfView < 6) ||
 		(radOfDisp > 6) || (radOfDisp < 4) ||
 		(lifeTime > 30) || (lifeTime < 20) ||
 		(eatTime > 9) || (eatTime < 7) ||
-		(radOfDisp > radOfView))
+		(radOfDisp > radOfView) ||
+		(sex>1 || sex<0))
 	{
 		throw Exception(1);
 	}
@@ -87,7 +88,7 @@ bool Herbivore::reproduce(std::vector<Organism*>& organisms)
 	for (int i = 0; i<organisms.size(); i++)
 	{
 		if ((organisms[i] != this) && (coef == organisms[i]->getCoef()) && (radOfDisp >= way(organisms[i]->getLocation())) &&
-			(organisms[i]->getReprodaction() > organisms[i]->getPauseReprodaction()))
+			(organisms[i]->getReprodaction() > organisms[i]->getPauseReprodaction() && (sex != organisms[i]->getSex())))
 		{
 			if (way(organisms[i]->getLocation()) < minWay)
 			{
@@ -104,7 +105,7 @@ bool Herbivore::reproduce(std::vector<Organism*>& organisms)
 		int chance = rand() % 3 + 4;
 		while (chance)
 		{
-			organisms.push_back(new Herbivore(location, rand() % 2 + 4, rand() % 2 + 6, rand() % 10 + 20, rand() % 2 + 7));
+			organisms.push_back(new Herbivore(location, rand() % 2 + 4, rand() % 2 + 6, rand() % 10 + 20, rand() % 2 + 7,(bool)rand()%2));
 			chance--;
 		}
 		return true;

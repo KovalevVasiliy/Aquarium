@@ -1,9 +1,9 @@
 #include "Organism.h"
 
 Organism::Organism(coordinates location_, int radOfDisp_, int radOfView_,
-	int lifeTime_, int pauseReprodaction_, int coef_, sf::Sprite* body_) 
+	int lifeTime_, int pauseReprodaction_, int coef_,bool sex_, sf::Sprite* body_) 
 	: lifeTime(lifeTime_), radOfDisp(radOfDisp_), radOfView(radOfView_),
-	pauseReprodaction(pauseReprodaction_), reproduction(0), coef(coef_),location(location_)
+	pauseReprodaction(pauseReprodaction_), reproduction(0), coef(coef_), sex(sex_),location(location_)
 {
 	body = new sf::Sprite;
 	body = body_;
@@ -39,7 +39,10 @@ int Organism::getCoef() const
 {
 	return coef;
 }
-
+bool Organism::getSex() const
+{
+	return sex;
+}
 sf::Sprite* Organism::getSprite() const
 {
 	return body;
