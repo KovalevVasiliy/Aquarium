@@ -3,14 +3,16 @@
 
 
 Predator::Predator(coordinates location_, int radOfDisp_, int radOfview_,
-	int lifeTime_, int eatTime_) :Fish(location_, radOfDisp_, radOfview_,
-		lifeTime_, eatTime_, 6, coefOfPredator, &sprites.PredatorMove)
+	int lifeTime_, int eatTime_,bool sex_) :Fish(location_, radOfDisp_, radOfview_,
+		lifeTime_, eatTime_, 6, coefOfPredator, sex, &sprites.PredatorMove)
 {
 	if ((radOfView > 10) || (radOfView < 6) ||
 		(radOfDisp > 7) || (radOfDisp < 6) ||
 		(lifeTime > 20) || (lifeTime < 15) ||
 		(eatTime > 7) || (eatTime < 4) ||
-		(radOfDisp > radOfView))
+		(radOfDisp > radOfView)||
+		(sex>1 ||sex<0))
+
 	{
 		throw Exception(1);
 	}
@@ -89,7 +91,7 @@ bool Predator::reproduce(std::vector<Organism*>& organisms)
 	for (int i = 0; i<organisms.size(); i++)
 	{
 		if ((organisms[i] != this) && (coef == organisms[i]->getCoef()) && (radOfDisp >= way(organisms[i]->getLocation())) &&
-			(organisms[i]->getReprodaction() > organisms[i]->getPauseReprodaction()))
+			(organisms[i]->getReprodaction() > organisms[i]->getPauseReprodaction())&&(sex!=organisms[i]->getSex()))
 		{
 			if (way(organisms[i]->getLocation()) < minWay)
 			{
@@ -106,7 +108,7 @@ bool Predator::reproduce(std::vector<Organism*>& organisms)
 		int chance = rand() % 1 + 2;
 		while (chance)
 		{
-			organisms.push_back(new Predator(location, rand() % 1 + 6, rand() % 4 + 6, rand() % 5 + 15, rand() % 3 + 4));
+			organisms.push_back(new Predator(location, rand() % 1 + 6, rand() % 4 + 6, rand() % 5 + 15, rand() % 3 + 4,(bool)rand()%2));
 			chance--;
 		}
 		return true;

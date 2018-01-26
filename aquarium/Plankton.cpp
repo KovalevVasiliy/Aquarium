@@ -2,13 +2,14 @@
 
 
 Plankton::Plankton(coordinates location_, int radOfDisp_, int radOfview_,
-	int lifeTime_) :Organism(location_, radOfDisp_, radOfview_,
-		lifeTime_, 4, coefOfPlancton,&sprites.PlanktonMove)
+	int lifeTime_,bool sex_) :Organism(location_, radOfDisp_, radOfview_,
+		lifeTime_, 4, coefOfPlancton,sex,&sprites.PlanktonMove)
 {
 	if ((radOfView > 4) || (radOfView < 2) ||
 		(radOfDisp > 3) || (radOfDisp < 1) ||
 		(lifeTime > 10) || (lifeTime < 5) ||
-		(radOfDisp > radOfView))
+		(radOfDisp > radOfView)||
+		(sex>1||sex<0))
 	{
 		throw Exception(1);
 	}
@@ -49,7 +50,7 @@ bool Plankton::reproduce(std::vector<Organism*>& organisms)
 	for (int i=0;i<organisms.size();i++)
 	{
 		if ((organisms[i] != this) && (coef == organisms[i]->getCoef()) && (radOfDisp >= way(organisms[i]->getLocation())) &&
-			(organisms[i]->getReprodaction() > organisms[i]->getPauseReprodaction()))
+			(organisms[i]->getReprodaction() > organisms[i]->getPauseReprodaction())&& (sex!= organisms[i]->getSex()))
 		{
 			if (way(organisms[i]->getLocation()) < minWay)
 			{
@@ -66,7 +67,7 @@ bool Plankton::reproduce(std::vector<Organism*>& organisms)
 		int chance = rand() % 5 + 5;
 		while (chance)
 		{
-			organisms.push_back(new Plankton(location, rand() % 2 + 1, rand() % 2 + 2, rand() % 5 + 5));
+			organisms.push_back(new Plankton(location, rand() % 2 + 1, rand() % 2 + 2, rand() % 5 + 5,bool(rand()%2)));
 			chance--;
 		}
 		return true;

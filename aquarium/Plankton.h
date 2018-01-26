@@ -15,7 +15,7 @@ class Plankton :
 {
 public:
 	Plankton(coordinates location_, int radOfDisp_, int radOfview_,
-		int lifeTime_);
+		int lifeTime_, bool sex_);
 	virtual ~Plankton();
 	//using Organism::update;
 	virtual bool update(std::vector<Organism*>& organisms, coordinates sizeAqua) override;
