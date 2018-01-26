@@ -3,15 +3,16 @@
 
 
 Herbivore::Herbivore(coordinates location_, int radOfDisp_, int radOfview_,
-	int lifeTime_, int eatTime_, Sprites* sprites_) :Fish(location_, radOfDisp_, radOfview_,
-		lifeTime_, eatTime_, 6, coefOfHerbivore,sprites_)
+	int lifeTime_, int eatTime_, bool sex_,Sprites* sprites_) :Fish(location_, radOfDisp_, radOfview_,
+		lifeTime_, eatTime_, 6, coefOfHerbivore,sex_,sprites_)
 {
-	if ((radOfView > 8) || (radOfView < 6) ||
-		(radOfDisp > 6) || (radOfDisp < 4) ||
-		(lifeTime > 30) || (lifeTime < 20) ||
-		(eatTime > 9) || (eatTime < 7) ||
+	if ((radOfView> radOfViewHerbivore + radOfViewHerbivoreDelta) || (radOfView < radOfViewHerbivore - radOfViewHerbivoreDelta) ||
+		(radOfDisp> radOfDispHerbivore + radOfDispHerbivoreDelta) || (radOfDisp < radOfDispHerbivore - radOfDispHerbivoreDelta) ||
+		(lifeTime>lifeTimeHerbivore + lifeTimeHerbivoreDelta) || (lifeTime < lifeTimeHerbivore - lifeTimeHerbivoreDelta) ||
+		(eatTime> eatTimeHerbivore + eatTimeHerbivoreDelta) || (eatTime < eatTimeHerbivore - eatTimeHerbivoreDelta) ||
 		(radOfDisp > radOfView))
 	{
+		std::cout << radOfDisp << radOfView << lifeTime << coef << std::endl;
 		throw Exception(1);
 	}
 }
@@ -87,12 +88,13 @@ bool Herbivore::reproduce(std::list<Organism*>& organisms)
 	int minWay = 10000;
 	for (auto u = organisms.begin(); u != organisms.end(); u++)
 	{
-		if ((*u != this) && (coef == (*u)->getCoef()) && (radOfDisp >= way((*u)->getLocation())) &&
-			((*u)->getReprodaction() >(*u)->getPauseReprodaction()))
+		int curWay = way((*u)->getLocation());
+		if ((*u != this) & (coef == (*u)->getCoef()) & (*u)->getSex() != this->getSex()
+			&((*u)->getReprodaction() >(*u)->getPauseReprodaction()) &(radOfDisp >= curWay))
 		{
-			if (way((*u)->getLocation()) < minWay)
+			if (curWay < minWay)
 			{
-				minWay = way((*u)->getLocation());
+				minWay = curWay;
 				choice = u;
 			}
 		}
@@ -102,10 +104,15 @@ bool Herbivore::reproduce(std::list<Organism*>& organisms)
 		location = (*choice)->getLocation();
 		reproduction = 0;
 		(*choice)->reproductionUp();
-		int chance = rand() % 3 + 4;
+		int chance = childrenOfHerbivore;
 		while (chance)
 		{
-			organisms.push_back(new Herbivore(location, rand() % 2 + 4, rand() % 2 + 6, rand() % 10 + 20, rand() % 2 + 7, sprites));
+			int radOfView = rand() % radOfViewHerbivoreDelta + radOfViewHerbivore;
+			int radOfDisp = rand() % radOfDispHerbivoreDelta + radOfDispHerbivore;
+			int lifeTime = rand() % lifeTimeHerbivoreDelta + lifeTimeHerbivore;
+			int eattime = rand() % eatTimeHerbivoreDelta + eatTimeHerbivore;
+			bool sex = rand() % 2;
+			organisms.push_back(new Herbivore(location, radOfDisp, radOfView, lifeTime, eattime,sex, sprites));
 			chance--;
 		}
 		return true;

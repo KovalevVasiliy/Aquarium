@@ -3,15 +3,16 @@
 
 
 Predator::Predator(coordinates location_, int radOfDisp_, int radOfview_,
-	int lifeTime_, int eatTime_, Sprites* sprites_) :Fish(location_, radOfDisp_, radOfview_,
-		lifeTime_, eatTime_, 6, coefOfPredator, sprites_)
+	int lifeTime_, int eatTime_, bool sex_,Sprites* sprites_) :Fish(location_, radOfDisp_, radOfview_,
+		lifeTime_, eatTime_, 6, coefOfPredator,sex_, sprites_)
 {
-	if ((radOfView > 10) || (radOfView < 6) ||
-		(radOfDisp > 7) || (radOfDisp < 6) ||
-		(lifeTime > 20) || (lifeTime < 15) ||
-		(eatTime > 7) || (eatTime < 4) ||
+	if ((radOfView > radOfViewPredator + radOfViewPredatorDelta) || (radOfView < radOfViewPredator - radOfViewPredatorDelta) ||
+		(radOfDisp> radOfDispPredator + radOfDispPredatorDelta) || (radOfDisp < radOfDispPredator - radOfDispPredatorDelta) ||
+		(lifeTime>lifeTimePredator + lifeTimePredatorDelta) || (lifeTime < lifeTimePredator - lifeTimePredatorDelta) ||
+		(eatTime>eatTimePredator + eatTimePredatorDelta) || (eatTime < eatTimePredator - eatTimePredatorDelta) ||
 		(radOfDisp > radOfView))
 	{
+		std::cout << radOfDisp << radOfView << lifeTime << coef << std::endl;
 		throw Exception(1);
 	}
 
@@ -88,12 +89,13 @@ bool Predator::reproduce(std::list<Organism*>& organisms)
 	int minWay = 10000;
 	for (auto u = organisms.begin(); u != organisms.end(); u++)
 	{
-		if ((*u != this) && (coef == (*u)->getCoef()) && (radOfDisp >= way((*u)->getLocation())) &&
-			((*u)->getReprodaction() > (*u)->getPauseReprodaction()))
+		int curWay = way((*u)->getLocation());
+		if ((*u != this) & (coef == (*u)->getCoef()) & (*u)->getSex() != this->getSex()
+			&((*u)->getReprodaction() >(*u)->getPauseReprodaction()) &(radOfDisp >= curWay))
 		{
-			if (way((*u)->getLocation()) < minWay)
+			if (curWay < minWay)
 			{
-				minWay = way((*u)->getLocation());
+				minWay = curWay;
 				choice = u;
 			}
 		}
@@ -103,10 +105,15 @@ bool Predator::reproduce(std::list<Organism*>& organisms)
 		location =(* choice)->getLocation();
 		reproduction = 0;
 		(*choice)->reproductionUp();
-		int chance = rand() % 1 + 2;
+		int chance = childrenOfPredator;
 		while (chance)
 		{
-			organisms.push_back(new Predator(location, rand() % 1 + 6, rand() % 4 + 6, rand() % 5 + 15, rand() % 3 + 4, sprites));
+			int radOfView = rand() % radOfViewPredatorDelta + radOfViewPredator;
+			int radOfDisp = rand() % radOfDispPredatorDelta + radOfDispPredator;
+			int lifeTime = rand() % lifeTimePredatorDelta + lifeTimePredator;
+			int eattime = rand() % eatTimePredatorDelta + eatTimePredator;
+			bool sex = rand() % 2;
+			organisms.push_back(new Predator(location, radOfDisp, radOfView, lifeTime, eattime,sex, sprites));
 			chance--;
 		}
 		return true;

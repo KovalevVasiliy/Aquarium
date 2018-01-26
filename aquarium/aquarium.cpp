@@ -18,7 +18,79 @@ Aquarium::Aquarium(coordinates size, std::list<Organism*> org)
 		}
 	}
 }
+void Aquarium::randFill(int numOfHerbivore, int numOfPlanktones,int numOfPredators)
+{
+	std::list<Organism*> listOfOrganisms;
+	Sprites* sprites = new Sprites;
+	int chance = numOfPlanktones;
+	while (chance)
+	{
+		coordinates posOfPlankton;
+		int radOfView = rand() % radOfViewPlanktonDelta + radOfViewPlankton;
+		int radOfDisp = rand() % radOfDispPlanktonDelta + radOfDispPlankton;
+		int lifeTime = rand() % lifeTimePlanktonDelta + lifeTimePlankton;
+		posOfPlankton.first = rand() % size.first + 0;
+		posOfPlankton.second = rand() % size.second + 0;
+		posOfPlankton.third = rand() % size.third + 0;
+		bool sex = rand() % 2;
+		try
+		{
+			listOfOrganisms.push_back(new Plankton(posOfPlankton, radOfDisp, radOfView, lifeTime,sex, sprites));
+		}
+		catch (Exception &ex)
+		{
+			std::cout << ex.what() << std::endl;
+		}
+		chance--;
+	}
 
+	chance = numOfHerbivore;
+	while (chance)
+	{
+		coordinates posOfHerbivore;
+		int radOfView = rand() % radOfViewHerbivoreDelta + radOfViewHerbivore;
+		int radOfDisp = rand() % radOfDispHerbivoreDelta + radOfDispHerbivore;
+		int lifeTime = rand() % lifeTimeHerbivoreDelta + lifeTimeHerbivore;
+		int eattime = rand() % eatTimeHerbivoreDelta + eatTimeHerbivore;
+		posOfHerbivore.first = rand() % size.first + 0;
+		posOfHerbivore.second = rand() % size.second + 0;
+		posOfHerbivore.third = rand() % size.third + 0;
+		bool sex = rand() % 2;
+		try
+		{
+			listOfOrganisms.push_back(new Herbivore(posOfHerbivore, radOfDisp, radOfView, lifeTime, eattime,sex, sprites));
+		}
+		catch (Exception &ex)
+		{
+			std::cout << ex.what() << std::endl;
+		}
+		chance--;
+	}
+
+	chance = numOfPredators;
+	while (chance)
+	{
+		coordinates posOfPredators;
+		int radOfView = rand() % radOfViewPredatorDelta + radOfViewPredator;
+		int radOfDisp = rand() % radOfDispPredatorDelta + radOfDispPredator;
+		int lifeTime = rand() % lifeTimePredatorDelta + lifeTimePredator;
+		int eattime = rand() % eatTimePredatorDelta + eatTimePredator;
+		posOfPredators.first = rand() % size.first + 0;
+		posOfPredators.second = rand() % size.second + 0;
+		posOfPredators.third = rand() % size.third + 0;
+		bool sex = rand() % 2;
+		try
+		{
+			listOfOrganisms.push_back(new Predator(posOfPredators, radOfDisp, radOfView, lifeTime, eattime,sex, sprites));
+		}
+		catch (Exception &ex)
+		{
+			std::cout << ex.what() << std::endl;
+		}
+		chance--;
+	}
+	this->listOfOrganisms = listOfOrganisms;
+}
 Aquarium::~Aquarium()
 {
 	//listOfOrganisms.~list();

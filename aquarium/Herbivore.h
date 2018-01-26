@@ -15,7 +15,7 @@ class Herbivore :
 {
 public:
 	Herbivore(coordinates location_, int radOfDisp_, int radOfview_,
-		int lifeTime_, int eatTime_, Sprites* sprites_);
+		int lifeTime_, int eatTime_, bool sex_,Sprites* sprites_);
 	virtual ~Herbivore();
 	virtual void update(std::list<Organism*>& organisms, coordinates sizeAqua, std::set<Organism*>& del) override;
 private:

@@ -6,75 +6,7 @@
 #include "Predator.h"
 void main()
 {
-	std::list<Organism*> listOfOrganisms;
 	coordinates size(28,28,28);
-	Sprites* sprites = new Sprites;
-
-	int chance = rand() % 10 + 85;
-	while (chance)
-	{
-		coordinates posOfPlankton;
-		int radOfView = rand() % 2 + 2;
-		int radOfDisp = rand() % 2 + 1;
-		int lifeTime = rand() % 5 + 5;
-		posOfPlankton.first = rand() % size.first + 0;
-		posOfPlankton.second = rand() % size.second + 0;
-		posOfPlankton.third = rand() % size.third + 0;
-		try
-		{
-			listOfOrganisms.push_back(new Plankton(posOfPlankton, radOfDisp, radOfView, lifeTime,sprites));
-		}
-		catch (Exception &ex)
-		{
-			std::cout << ex.what() << std::endl;
-		}
-		chance--;
-	}
-
-	chance = rand() % 4 + 100;
-	while (chance)
-	{
-		coordinates posOfHerbivore;
-		int radOfView = rand() % 2 + 6;
-		int radOfDisp = rand() % 2 + 4;
-		int lifeTime = rand() % 10 + 20;
-		int eattime = rand() % 2 + 7;
-		posOfHerbivore.first = rand() % size.first + 0;
-		posOfHerbivore.second = rand() % size.second + 0;
-		posOfHerbivore.third = rand() % size.third + 0;
-		try
-		{
-			listOfOrganisms.push_back(new Herbivore(posOfHerbivore, radOfDisp, radOfView, lifeTime, eattime, sprites));
-		}
-		catch (Exception &ex)
-		{
-			std::cout << ex.what() << std::endl;
-		}
-		chance--;
-	}
-	
-	chance = rand() % 3 + 60;
-	while (chance)
-	{
-		coordinates posOfPredators;
-		int radOfView = rand() % 4 + 6;
-		int radOfDisp = rand() % 1 + 6;
-		int lifeTime = rand() % 5 + 15;
-		int eattime = rand() % 3 + 4;
-		posOfPredators.first = rand() % size.first + 0;
-		posOfPredators.second = rand() % size.second + 0;
-		posOfPredators.third = rand() % size.third + 0;
-		try
-		{
-			listOfOrganisms.push_back(new Predator(posOfPredators, radOfDisp, radOfView, lifeTime, eattime, sprites));
-		}
-		catch (Exception &ex)
-		{
-			std::cout << ex.what() << std::endl;
-		}
-		chance--;
-	}
-	
 	sf::RenderWindow window(sf::VideoMode(980, 980), "Aquarium", sf::Style::Close);
 	window.setFramerateLimit(30);
 	sf::Event e;
@@ -88,18 +20,12 @@ void main()
 	diedText.setFillColor(sf::Color::Red);
 	diedText.setPosition(size.first / 2,size.second/2);
 	///
-	/*///crowd
-	sf::Font fontToCrow;
-	fontToCrow.loadFromFile("CyrilicOld.ttf");
-	sf::Text diedText("Aquarium died", fontToCrow, 90);
-	diedText.setFillColor(sf::Color::Red);
-	diedText.setPosition(size.first / 2, size.second / 2);
-	///*/
 	int plan = 1;
-	static int count = 0;
+	int count = 0;
 	try
 	{
-		Aquarium aq(size, listOfOrganisms);
+		Aquarium aq(size);
+		aq.randFill(100, 150, 150);
 		std::string mapPath = "water.png";
 		Drawer aquaDraw(window, size, mapPath);
 		while (window.isOpen()) {
@@ -182,7 +108,7 @@ void main()
 				throw Exception(3);
 			}
 
-			//aq.show();
+			aq.show();
 			window.display();
 			
 			
@@ -194,5 +120,6 @@ void main()
 		std::cout << ex.what() << std::endl;
 	}
 	std::cout << count << std::endl;
+	
 	std::cin.get();
 }

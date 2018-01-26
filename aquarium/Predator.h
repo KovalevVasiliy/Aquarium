@@ -15,7 +15,7 @@ class Predator :
 {
 public:
 	Predator(coordinates location_, int radOfDisp_, int radOfview_,
-		int lifeTime_, int eatTime_, Sprites* sprites_);
+		int lifeTime_, int eatTime_, bool sex_,Sprites* sprites_);
 	virtual ~Predator();
 	virtual void update(std::list<Organism*>& organisms, coordinates sizeAqua, std::set<Organism*>& del) override;
 private:

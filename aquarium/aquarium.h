@@ -2,6 +2,9 @@
 #define AQUARIUM_H
 
 #include "Organism.h"
+#include "Plankton.h"
+#include "Herbivore.h"
+#include "Predator.h"
 #include "Constants.h"
 
 class Aquarium
@@ -14,6 +17,7 @@ public:
 	void update();
 	void addOrganism(Organism* org);
 	std::list<Organism*> getListOfOrganisms();
+	void randFill(int numOfHerbivore, int numOfPlanktones, int numOfPredators);
 	bool isAlive();
 
 private:

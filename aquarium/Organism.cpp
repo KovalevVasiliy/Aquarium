@@ -1,9 +1,9 @@
 #include "Organism.h"
 
 Organism::Organism(coordinates location_, int radOfDisp_, int radOfView_,
-	int lifeTime_, int pauseReprodaction_, int coef_, Sprites* sprites_)
+	int lifeTime_, int pauseReprodaction_, int coef_,bool sex_, Sprites* sprites_)
 	: lifeTime(lifeTime_), radOfDisp(radOfDisp_), radOfView(radOfView_), sprites(sprites_),
-	pauseReprodaction(pauseReprodaction_), reproduction(0), coef(coef_),location(location_)
+	pauseReprodaction(pauseReprodaction_), reproduction(0), coef(coef_),sex(sex_),location(location_)
 {
 	//body = new sf::Sprite;
 };
@@ -12,9 +12,12 @@ Organism::Organism(coordinates location_, int radOfDisp_, int radOfView_,
 
 Organism::~Organism()
 {
-	delete this;
+	//delete this;
 }
-
+bool Organism::getSex()const
+{
+	return sex;
+}
 void Organism::reproductionUp()
 {
 	reproduction = 0;

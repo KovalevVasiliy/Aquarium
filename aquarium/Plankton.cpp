@@ -2,14 +2,15 @@
 
 
 Plankton::Plankton(coordinates location_, int radOfDisp_, int radOfview_,
-	int lifeTime_, Sprites* sprites_) :Organism(location_, radOfDisp_, radOfview_,
-		lifeTime_, 4, coefOfPlancton,sprites_)
+	int lifeTime_, bool sex_, Sprites* sprites_) :Organism(location_, radOfDisp_, radOfview_,
+		lifeTime_, 5, coefOfPlancton,sex_,sprites_)
 {
-	if ((radOfView > 4) || (radOfView < 2) ||
-		(radOfDisp > 3) || (radOfDisp < 1) ||
-		(lifeTime > 10) || (lifeTime < 5) ||
+	if ((radOfView> radOfViewPlankton+radOfViewPlanktonDelta) || (radOfView < radOfViewPlankton - radOfViewPlanktonDelta) ||
+		(radOfDisp> radOfDispPlankton + radOfDispPlanktonDelta) || (radOfDisp < radOfDispPlankton - radOfDispPlanktonDelta) ||
+		(lifeTime> lifeTimePlankton + lifeTimePlanktonDelta) || (lifeTime < lifeTimePlankton - lifeTimePlanktonDelta) ||
 		(radOfDisp > radOfView))
 	{
+		std::cout << radOfDisp << radOfView << lifeTime <<coef<< std::endl;
 		throw Exception(1);
 	}
 	
@@ -48,12 +49,13 @@ bool Plankton::reproduce(std::list<Organism*>& organisms)
 	int minWay=10000;
 	for (auto u = organisms.begin(); u != organisms.end(); u++)
 	{
-		if ((*u != this) && (coef == (*u)->getCoef()) && (radOfDisp >= way((*u)->getLocation())) &&
-			((*u)->getReprodaction() > (*u)->getPauseReprodaction()))
+		int curWay = way((*u)->getLocation());
+		if ((*u != this) & (coef == (*u)->getCoef()) & (*u)->getSex() != this->getSex()
+			&((*u)->getReprodaction() >(*u)->getPauseReprodaction()) &(radOfDisp >= curWay))
 		{
-			if (way((*u)->getLocation()) < minWay)
+			if (curWay < minWay)
 			{
-				minWay = way((*u)->getLocation());
+				minWay = curWay;
 				choice = u;
 			}
 		}
@@ -63,10 +65,14 @@ bool Plankton::reproduce(std::list<Organism*>& organisms)
 		location = (*choice)->getLocation();
 		reproduction = 0;
 		(*choice)->reproductionUp();
-		int chance = rand() % 5 + 5;
+		int chance = childrenOfPlankton;
 		while (chance)
 		{
-			organisms.push_back(new Plankton(location, rand() % 2 + 1, rand() % 2 + 2, rand() % 5 + 5, sprites));
+			int radOfView = rand() % radOfViewPlanktonDelta + radOfViewPlankton;
+			int radOfDisp = rand() % radOfDispPlanktonDelta + radOfDispPlankton;
+			int lifeTime = rand() % lifeTimePlanktonDelta + lifeTimePlankton;
+			bool sex = rand() % 2;
+			organisms.push_back(new Plankton(location, radOfDisp, radOfView, lifeTime,sex, sprites));
 			chance--;
 		}
 		return true;

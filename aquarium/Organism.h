@@ -16,7 +16,7 @@ class Organism
 {
 public:
 	Organism(coordinates location_, int radOfDisp_, int radOfView_,
-		int lifeTime_, int pauseReprodaction_, int coef_, Sprites* sprites_);
+		int lifeTime_, int pauseReprodaction_, int coef_,bool sex_, Sprites* sprites_);
 	virtual ~Organism();
 	virtual void update(std::list<Organism*>& organisms, coordinates sizeAqua, std::set<Organism*>& del) = 0;
 	virtual void move(std::list<Organism*>& organisms, coordinates sizeAqua) = 0;
@@ -25,6 +25,7 @@ public:
 	int getCoef() const;
 	int getReprodaction() const;
 	int getPauseReprodaction() const;
+	bool getSex()const;
 	sf::Sprite getSprite() const;
 	coordinates getLocation()const;
 	
@@ -39,6 +40,7 @@ protected:
 	const int radOfView;
 	const int radOfDisp;
 	const int coef;
+	const bool sex;
 	coordinates location;
 	Sprites* sprites;
 };
