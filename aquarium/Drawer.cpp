@@ -1,5 +1,5 @@
 #include "Drawer.h"
-int SIZE = 35;
+const int SIZE = 35;
 Drawer::~Drawer()
 {
 }
@@ -12,43 +12,39 @@ Drawer::Drawer(sf::RenderWindow& renderWindow, coordinates size, std::string aqu
 	this->size = size;
 
 }
-void Drawer::drawOrganisms(std::vector<Organism*>& listOfOrganisms,int plan)
+void Drawer::drawOrganisms(std::list<Organism*>& listOfOrganisms,int plan)
 {
-	std::cout << "\n\n"<<listOfOrganisms.size()<<"   ";
+	//std::cout << "\n\n"<<listOfOrganisms.size()<<"   ";
 	if (plan == 1)
 	{
-		for (auto i = listOfOrganisms.rbegin(); i != listOfOrganisms.rend(); i++)
+		for (auto i : listOfOrganisms)
 		{
-			//organismSprite->setPosition(((*i)->getLocation().second*20), ((*i)->getLocation().first*20));
-			//(*i)->draw(renderWindow);
-			(*i)->getSprite()->setPosition(((*i)->getLocation().first * SIZE), ((*i)->getLocation().second * SIZE));
-			renderWindow->draw(*(*i)->getSprite());
-			//renderWindow->draw(organismSprite);
-			std::cout << (*i)->getLocation().first << "-" << (*i)->getLocation().second << "  ";
+			sf::Sprite sp = i->getSprite();
+			sp.setPosition(i->getLocation().first*SIZE, i->getLocation().second*SIZE);
+			renderWindow->draw(sp);
 		}
 	}
 	else if (plan == 2) 
 	{
-		for (auto i = listOfOrganisms.rbegin(); i != listOfOrganisms.rend(); i++)
+		for (auto i :listOfOrganisms)
 		{
-			//organismSprite->setPosition(((*i)->getLocation().second*20), ((*i)->getLocation().first*20));
-			//(*i)->draw(renderWindow);
-			(*i)->getSprite()->setPosition(((*i)->getLocation().first * SIZE), ((*i)->getLocation().third * SIZE));
-			renderWindow->draw(*(*i)->getSprite());
-			//renderWindow->draw(organismSprite);
-			std::cout << (*i)->getLocation().first << "-" << (*i)->getLocation().third << "  ";
+			sf::Sprite sp = i->getSprite();
+			sp.setPosition(i->getLocation().first*SIZE, i->getLocation().third*SIZE);
+			//std::cout << (*i)->getLocation().first << "-" << (*i)->getLocation().third << "  ";
 		}
 	}
 	else
 	{
 		for (auto i = listOfOrganisms.rbegin(); i != listOfOrganisms.rend(); i++)
 		{
-			//organismSprite->setPosition(((*i)->getLocation().second*20), ((*i)->getLocation().first*20));
-			//(*i)->draw(renderWindow);
-			(*i)->getSprite()->setPosition(((*i)->getLocation().second * SIZE), ((*i)->getLocation().third* SIZE));
-			renderWindow->draw(*(*i)->getSprite());
+			for (auto i : listOfOrganisms)
+			{
+				sf::Sprite sp = i->getSprite();
+				sp.setPosition(i->getLocation().second*SIZE, i->getLocation().third*SIZE);
+				renderWindow->draw(sp);
+			}
 			//renderWindow->draw(organismSprite);
-			std::cout << (*i)->getLocation().second << "-" << (*i)->getLocation().third << "  ";
+			//std::cout << (*i)->getLocation().second << "-" << (*i)->getLocation().third << "  ";
 		}
 	}
 }

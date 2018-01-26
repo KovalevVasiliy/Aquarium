@@ -1,19 +1,19 @@
 #include "Organism.h"
 
 Organism::Organism(coordinates location_, int radOfDisp_, int radOfView_,
-	int lifeTime_, int pauseReprodaction_, int coef_,bool sex_, sf::Sprite* body_) 
-	: lifeTime(lifeTime_), radOfDisp(radOfDisp_), radOfView(radOfView_),
-	pauseReprodaction(pauseReprodaction_), reproduction(0), coef(coef_), sex(sex_),location(location_)
+	int lifeTime_, int pauseReprodaction_, int coef_, Sprites* sprites_)
+	: lifeTime(lifeTime_), radOfDisp(radOfDisp_), radOfView(radOfView_), sprites(sprites_),
+	pauseReprodaction(pauseReprodaction_), reproduction(0), coef(coef_),location(location_)
 {
-	body = new sf::Sprite;
-	body = body_;
-	sprites=*(new Sprites);
+	//body = new sf::Sprite;
 };
 
 
 
 Organism::~Organism()
-{}
+{
+	delete this;
+}
 
 void Organism::reproductionUp()
 {
@@ -39,27 +39,23 @@ int Organism::getCoef() const
 {
 	return coef;
 }
-bool Organism::getSex() const
-{
-	return sex;
-}
-sf::Sprite* Organism::getSprite() const
+
+sf::Sprite Organism::getSprite() const
 {
 	return body;
 }
 
-void Organism::died(std::vector<Organism*>& organisms)
-{
-	for (auto i=organisms.begin();i!=organisms.end();i++)
-	{
-		if (*i == this)
-		{
-			organisms.erase(i);
-			this->~Organism();
-			return;
-		}
-	}
-}
+//void Organism::died(std::list<Organism*>& organisms)
+//{
+//	for (auto i=organisms.begin();i!=organisms.end();i++)
+//	{
+//		if (*i == this)
+//		{
+//			this->~Organism();
+//			return;
+//		}
+//	}
+//}
 
 int Organism::way(coordinates neighbors)
 {
@@ -68,4 +64,9 @@ int Organism::way(coordinates neighbors)
 		+ (neighbors.third - location.third)*(neighbors.third - location.third));
 }
 
-
+int Organism::way(coordinates this_, coordinates neighbors)
+{
+	return sqrt((neighbors.first - this_.first)*(neighbors.first - this_.first)
+		+ (neighbors.second - this_.second)*(neighbors.second - this_.second)
+		+ (neighbors.third - this_.third)*(neighbors.third - this_.third));
+}
