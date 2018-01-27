@@ -1,11 +1,11 @@
 #ifndef COORDINATES_H
 #define COORDINATES_H
 struct coordinates
-{	coordinates(int first,int second,int third):first(first),second(second),third(third){}
+{	coordinates(float first,float second,float third):first(first),second(second),third(third){}
 	coordinates(){}
-	int first;
-	int second;
-	int third;
+	float first;
+	float second;
+	float third;
 	bool operator>=(const coordinates& rhs)
 	{
 		if (first >= rhs.first && second >= rhs.second
@@ -30,11 +30,11 @@ struct coordinates
 			return false;
 		}
 	}
-	coordinates operator+(const int& rhs)
+	coordinates operator+(const float& rhs)
 	{
 		return coordinates(first + rhs, second + rhs, third + rhs);
 	}
-	coordinates operator-(const int& rhs)
+	coordinates operator-(const float& rhs)
 	{
 		return coordinates(first - rhs, second - rhs, third - rhs);
 	}

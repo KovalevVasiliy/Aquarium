@@ -29,9 +29,9 @@ void Aquarium::randFill(int numOfHerbivore, int numOfPlanktones,int numOfPredato
 		int radOfView = rand() % radOfViewPlanktonDelta + radOfViewPlankton;
 		int radOfDisp = rand() % radOfDispPlanktonDelta + radOfDispPlankton;
 		int lifeTime = rand() % lifeTimePlanktonDelta + lifeTimePlankton;
-		posOfPlankton.first = rand() % size.first + 0;
-		posOfPlankton.second = rand() % size.second + 0;
-		posOfPlankton.third = rand() % size.third + 0;
+		posOfPlankton.first = rand() % (int)size.first + 0;
+		posOfPlankton.second = rand() % (int)size.second + 0;
+		posOfPlankton.third = rand() % (int)size.third + 0;
 		bool sex = rand() % 2;
 		try
 		{
@@ -52,9 +52,9 @@ void Aquarium::randFill(int numOfHerbivore, int numOfPlanktones,int numOfPredato
 		int radOfDisp = rand() % radOfDispHerbivoreDelta + radOfDispHerbivore;
 		int lifeTime = rand() % lifeTimeHerbivoreDelta + lifeTimeHerbivore;
 		int eattime = rand() % eatTimeHerbivoreDelta + eatTimeHerbivore;
-		posOfHerbivore.first = rand() % size.first + 0;
-		posOfHerbivore.second = rand() % size.second + 0;
-		posOfHerbivore.third = rand() % size.third + 0;
+		posOfHerbivore.first = rand() % (int)size.first + 0;
+		posOfHerbivore.second = rand() % (int)size.second + 0;
+		posOfHerbivore.third = rand() % (int)size.third + 0;
 		bool sex = rand() % 2;
 		try
 		{
@@ -75,9 +75,9 @@ void Aquarium::randFill(int numOfHerbivore, int numOfPlanktones,int numOfPredato
 		int radOfDisp = rand() % radOfDispPredatorDelta + radOfDispPredator;
 		int lifeTime = rand() % lifeTimePredatorDelta + lifeTimePredator;
 		int eattime = rand() % eatTimePredatorDelta + eatTimePredator;
-		posOfPredators.first = rand() % size.first + 0;
-		posOfPredators.second = rand() % size.second + 0;
-		posOfPredators.third = rand() % size.third + 0;
+		posOfPredators.first = rand() % (int)size.first + 0;
+		posOfPredators.second = rand() % (int)size.second + 0;
+		posOfPredators.third = rand() % (int)size.third + 0;
 		bool sex = rand() % 2;
 		try
 		{

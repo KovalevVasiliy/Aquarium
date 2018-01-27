@@ -4,32 +4,31 @@
 #include "Plankton.h"
 #include "Herbivore.h"
 #include "Predator.h"
+
 void main()
-{
+{	///
 	coordinates size(28,28,28);
 	sf::RenderWindow window(sf::VideoMode(980, 980), "Aquarium", sf::Style::Close);
-	window.setFramerateLimit(30);
+	window.setFramerateLimit(60);
 	sf::Event e;
 	const int UPDATING = 0, MODIFYING = 1;
 	int state = MODIFYING;
-	//Aquarium aquarium(coordinates(40, 30));
-	///died
-	sf::Font fontToDied;
-	fontToDied.loadFromFile("CyrilicOld.ttf");
-	sf::Text diedText("Aquarium died",fontToDied,150);
-	diedText.setFillColor(sf::Color::Red);
-	diedText.setPosition(size.first / 2,size.second/2);
-	///
 	int plan = 1;
 	int count = 0;
+	Aquarium aq(size);
+	aq.randFill(100, 150, 150);
+	std::string mapPath = "water.png";
+	Drawer aquaDraw(window, size, mapPath);
+	sf::Clock clock;
+	///
 	try
 	{
-		Aquarium aq(size);
-		aq.randFill(100, 150, 150);
-		std::string mapPath = "water.png";
-		Drawer aquaDraw(window, size, mapPath);
 		while (window.isOpen()) {
-			
+
+			float time = clock.getElapsedTime().asMicroseconds();
+			clock.restart();
+			time = time / 1000;
+
 			while (window.pollEvent(e)) {
 				if (e.type == sf::Event::Closed) {
 					window.close();
@@ -90,12 +89,11 @@ void main()
 				}
 			}
 			window.clear();
-			if (state == UPDATING) 
+			if (state == UPDATING&&(!aquaDraw.animationUpdate(aq.getListOfOrganisms(),time)))
 			{
 				aq.update();	
 				count++;
 			}
-
 			if (aq.isAlive())
 			{
 				aquaDraw.drawAquarium(plan);
@@ -103,16 +101,14 @@ void main()
 			}
 			else
 			{
-				window.draw(diedText);
+				aquaDraw.diedAnimation();
 				window.display();
 				throw Exception(3);
 			}
 
-			aq.show();
+			//aq.show();
 			window.display();
-			
-			
-			
+
 		}
 	}
 	catch (Exception &ex)

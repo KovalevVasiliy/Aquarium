@@ -47,7 +47,18 @@ sf::Sprite Organism::getSprite() const
 {
 	return body;
 }
-
+coordinates Organism::getPrevLocation()const
+{
+	return prevLocation;
+}
+void Organism::setLocation(coordinates loc)
+{
+	location = loc;
+}
+void Organism::setPrevLocation(coordinates loc)
+{
+	prevLocation = loc;
+}
 //void Organism::died(std::list<Organism*>& organisms)
 //{
 //	for (auto i=organisms.begin();i!=organisms.end();i++)

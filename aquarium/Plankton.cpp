@@ -13,6 +13,7 @@ Plankton::Plankton(coordinates location_, int radOfDisp_, int radOfview_,
 		std::cout << radOfDisp << radOfView << lifeTime <<coef<< std::endl;
 		throw Exception(1);
 	}
+	prevLocation = location_;
 	
 }
 
@@ -22,6 +23,7 @@ Plankton::~Plankton()
 
 void Plankton::update(std::list<Organism*>& organisms, coordinates sizeAqua, std::set<Organism*>& del)
 {
+	prevLocation = location;
 	body = sprites->PlanktonMove;
 	lifeTime--;
 	reproduction++;

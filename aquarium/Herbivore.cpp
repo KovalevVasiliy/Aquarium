@@ -15,6 +15,7 @@ Herbivore::Herbivore(coordinates location_, int radOfDisp_, int radOfview_,
 		std::cout << radOfDisp << radOfView << lifeTime << coef << std::endl;
 		throw Exception(1);
 	}
+	prevLocation = location_;
 }
 
 
@@ -23,6 +24,7 @@ Herbivore::~Herbivore()
 
 void Herbivore::update(std::list<Organism*>& organisms, coordinates sizeAqua, std::set<Organism*>& del)
 {
+	prevLocation = location;
 	body = sprites->HerbivoreMove;
 	lifeTime--;
 	starvation--;
@@ -151,7 +153,7 @@ void Herbivore::move(std::list<Organism*>& organisms, coordinates sizeAqua)
 						{
 							if ((location.third + h <= sizeAqua.third) && (location.third + h >= 0))
 							{
-								int distance = 0;
+								float distance = 0;
 								for (auto u : neighbors)
 								{
 									distance += way(coordinates(location.first + i, location.second + j,

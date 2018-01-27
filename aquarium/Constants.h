@@ -34,5 +34,6 @@ static const int lifeTimePredatorDelta = 5;
 static const int eatTimePredator = 4;
 static const int eatTimePredatorDelta = 3;
 static const int childrenOfPredator = 2;
-
+///
+static const double speed = 0.1;
 #endif

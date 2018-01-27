@@ -28,8 +28,11 @@ public:
 	bool getSex()const;
 	sf::Sprite getSprite() const;
 	coordinates getLocation()const;
-	
+	coordinates getPrevLocation()const;
+	void setLocation(coordinates loc);
+	void setPrevLocation(coordinates loc);
 protected:
+	double speed;
 	sf::Sprite body;
 	int way(coordinates neighbors);
 	int way(coordinates this_,coordinates neighbors);
@@ -42,6 +45,7 @@ protected:
 	const int coef;
 	const bool sex;
 	coordinates location;
+	coordinates prevLocation;
 	Sprites* sprites;
 };
 
