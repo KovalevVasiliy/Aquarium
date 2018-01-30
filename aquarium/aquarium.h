@@ -1,27 +1,25 @@
 #ifndef AQUARIUM_H
 #define AQUARIUM_H
 
-#include "Organism.h"
 #include "Plankton.h"
 #include "Herbivore.h"
 #include "Predator.h"
-#include "Constants.h"
 
 class Aquarium
 {
 public:
 	Aquarium(coordinates size);
-	Aquarium(coordinates size, std::list<Organism*> org);
+	Aquarium(coordinates size, std::list<Organism*> organisms);
 	~Aquarium();
-	void show();
+	void show() const;
 	void update();
 	void addOrganism(Organism* org);
-	std::list<Organism*> getListOfOrganisms();
+	std::list<Organism*> getListOfOrganisms() const;
 	void randFill(int numOfHerbivore, int numOfPlanktones, int numOfPredators);
-	bool isAlive();
+	bool isAlive() const;
 
 private:
-	bool isFull();
+	bool isFull() const;
 	coordinates size;
 	std::list<Organism*> listOfOrganisms;
 };

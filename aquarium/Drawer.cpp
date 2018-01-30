@@ -22,31 +22,126 @@ Drawer::Drawer(sf::RenderWindow& renderWindow, coordinates size, std::string aqu
 	planText3.setPosition(0, 0);
 
 }
-bool Drawer::animationUpdate(std::list<Organism*>&listOfOrganisms, float time)
+bool Drawer::animationUpdate(std::list<Organism*>&listOfOrganisms, int plan)
 {
 	bool flag = false;///если true то нужно отрисовывать
-	for (auto i : listOfOrganisms)
+	if (plan == 1)
 	{
-		if ((i->getPrevLocation().first != i->getLocation().first)&
-			(i->getPrevLocation().second != i->getLocation().second)&
-			(i->getPrevLocation().third != i->getLocation().third))
+		for (auto org : listOfOrganisms)
 		{
-			float x = i->getPrevLocation().first;
-			float y = i->getPrevLocation().second;
-			float y2 = i->getLocation().second;
-			float x2 = i->getLocation().first;
-			float z = i->getPrevLocation().third;
-			float z2 = i->getLocation().third;
-			float distance = sqrt((x2 - x)*(x2 - x) + (y2 - y)*(y2 - y));
-
-			if (distance > 2)
+			if ((org->getPrevLocation().first != org->getLocation().first) ||
+				(org->getPrevLocation().second != org->getLocation().second) ||
+				(org->getPrevLocation().third != org->getLocation().third))
 			{
-				x += speed*time*(x2 - x) / distance;//идем по иксу с помощью вектора нормали
-				y += speed*time*(y2 - y) / distance;//идем по игреку так же
-				z += speed*time*(z2 - z) / distance;
-				coordinates coor(x, y, z);
-				i->setPrevLocation(coor);
-				flag = true;
+				float x = org->getPrevLocation().first;
+				float y = org->getPrevLocation().second;
+				float y2 = org->getLocation().second;
+				float x2 = org->getLocation().first;
+				float z = org->getPrevLocation().third;
+				float z2 = org->getLocation().third;
+				float distance = sqrt((x2 - x)*(x2 - x) + (y2 - y)*(y2 - y));// +(z2 - z)*(z2 - z));
+				double speed = 0;
+				if (org->getCoef() == coefOfHerbivore)
+				{
+					speed = speedHerbivore;
+				}
+				else if (org->getCoef() == coefOfPlancton)
+				{
+					speed = speedPlancton;
+				}
+				else
+				{
+					speed = speedPredator;
+				}
+				if (distance > 1)
+				{
+					x += speed*(x2 - x) / distance;
+					y += speed*(y2 - y) / distance; \
+						z += speed*(z2 - z) / distance;
+					coordinates coor(x, y, z);
+					org->setPrevLocation(coor);
+					flag = true;
+				}
+			}
+		}
+	}
+	else if (plan == 2)
+	{
+		for (auto org : listOfOrganisms)
+		{
+			if ((org->getPrevLocation().first != org->getLocation().first) ||
+				(org->getPrevLocation().second != org->getLocation().second) ||
+				(org->getPrevLocation().third != org->getLocation().third))
+			{
+				float x = org->getPrevLocation().first;
+				float y = org->getPrevLocation().second;
+				float y2 = org->getLocation().second;
+				float x2 = org->getLocation().first;
+				float z = org->getPrevLocation().third;
+				float z2 = org->getLocation().third;
+				float distance = sqrt((x2 - x)*(x2 - x) + (z2 - z)*(z2 - z));// +(z2 - z)*(z2 - z));
+				double speed = 0;
+				if (org->getCoef() == coefOfHerbivore)
+				{
+					speed = speedHerbivore;
+				}
+				else if (org->getCoef() == coefOfPlancton)
+				{
+					speed = speedPlancton;
+				}
+				else
+				{
+					speed = speedPredator;
+				}
+				if (distance > 1)
+				{
+					x += speed*(x2 - x) / distance;
+					y += speed*(y2 - y) / distance; \
+						z += speed*(z2 - z) / distance;
+					coordinates coor(x, y, z);
+					org->setPrevLocation(coor);
+					flag = true;
+				}
+			}
+		}
+	}
+	else
+	{
+		for (auto org : listOfOrganisms)
+		{
+			if ((org->getPrevLocation().first != org->getLocation().first) ||
+				(org->getPrevLocation().second != org->getLocation().second) ||
+				(org->getPrevLocation().third != org->getLocation().third))
+			{
+				float x = org->getPrevLocation().first;
+				float y = org->getPrevLocation().second;
+				float y2 = org->getLocation().second;
+				float x2 = org->getLocation().first;
+				float z = org->getPrevLocation().third;
+				float z2 = org->getLocation().third;
+				float distance = sqrt((y2 - y)*(y2 - y) + (z2 - z)*(z2 - z));// +(z2 - z)*(z2 - z));
+				double speed = 0;
+				if (org->getCoef() == coefOfHerbivore)
+				{
+					speed = speedHerbivore;
+				}
+				else if (org->getCoef() == coefOfPlancton)
+				{
+					speed = speedPlancton;
+				}
+				else
+				{
+					speed = speedPredator;
+				}
+				if (distance > 1)
+				{
+					x += speed*(x2 - x) / distance;
+					y += speed*(y2 - y) / distance; \
+						z += speed*(z2 - z) / distance;
+					coordinates coor(x, y, z);
+					org->setPrevLocation(coor);
+					flag = true;
+				}
 			}
 		}
 	}
@@ -61,26 +156,24 @@ void Drawer::diedAnimation()
 	diedText.setPosition(size.first / 2, size.second / 2);
 	renderWindow->draw(diedText);
 }
-void Drawer::drawOrganisms(std::list<Organism*>& listOfOrganisms,int plan)
+void Drawer::drawOrganisms(std::list<Organism*>& listOfOrganisms, int plan)
 {
-	//std::cout << "\n\n"<<listOfOrganisms.size()<<"   ";
 	if (plan == 1)
 	{
 		for (auto i : listOfOrganisms)
 		{
 			sf::Sprite sp = i->getSprite();
-			sp.setPosition(i->getPrevLocation().first*SIZE, i->getPrevLocation().second*SIZE);
+			sp.setPosition(i->getPrevLocation().first*SIZE , i->getPrevLocation().second*SIZE);
 			renderWindow->draw(sp);
 		}
 	}
-	else if (plan == 2) 
+	else if (plan == 2)
 	{
-		for (auto i :listOfOrganisms)
+		for (auto i : listOfOrganisms)
 		{
 			sf::Sprite sp = i->getSprite();
 			sp.setPosition(i->getPrevLocation().first*SIZE, i->getPrevLocation().third*SIZE);
 			renderWindow->draw(sp);
-			//std::cout << i->getLocation().first << "-" << i->getLocation().third << "  ";
 		}
 	}
 	else
@@ -88,14 +181,13 @@ void Drawer::drawOrganisms(std::list<Organism*>& listOfOrganisms,int plan)
 		for (auto i : listOfOrganisms)
 		{
 			sf::Sprite sp = i->getSprite();
-			sp.setPosition(i->getPrevLocation().second*SIZE, i->getPrevLocation().third*SIZE);
+			sp.setPosition(i->getPrevLocation().second*SIZE, i->getPrevLocation().third*SIZE );
 			renderWindow->draw(sp);
-			//std::cout << i->getLocation().second << "-" << i->getLocation().third << "  ";
 		}
 	}
 }
 void Drawer::drawAquarium(int plan)
-{	
+{
 	if (plan == 1)
 	{
 		for (int i = 0; i < size.second; i++)
@@ -135,5 +227,5 @@ void Drawer::drawAquarium(int plan)
 			}
 		}
 	}
-	
+
 }

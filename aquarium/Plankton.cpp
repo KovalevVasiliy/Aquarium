@@ -1,20 +1,19 @@
 #include "Plankton.h"
-
+#include <iostream>
 
 Plankton::Plankton(coordinates location_, int radOfDisp_, int radOfview_,
 	int lifeTime_, bool sex_, Sprites* sprites_) :Organism(location_, radOfDisp_, radOfview_,
-		lifeTime_, 5, coefOfPlancton,sex_,sprites_)
+		lifeTime_, pauseReprOfPlankton, coefOfPlancton,sex_,sprites_)
 {
-	if ((radOfView> radOfViewPlankton+radOfViewPlanktonDelta) || (radOfView < radOfViewPlankton - radOfViewPlanktonDelta) ||
-		(radOfDisp> radOfDispPlankton + radOfDispPlanktonDelta) || (radOfDisp < radOfDispPlankton - radOfDispPlanktonDelta) ||
-		(lifeTime> lifeTimePlankton + lifeTimePlanktonDelta) || (lifeTime < lifeTimePlankton - lifeTimePlanktonDelta) ||
+	if ((radOfView> radOfViewPlankton+radOfViewPlanktonDelta) || (radOfView < radOfViewPlankton) ||
+		(radOfDisp> radOfDispPlankton + radOfDispPlanktonDelta) || (radOfDisp < radOfDispPlankton) ||
+		(lifeTime> lifeTimePlankton + lifeTimePlanktonDelta) || (lifeTime < lifeTimePlankton) ||
 		(radOfDisp > radOfView))
 	{
 		std::cout << radOfDisp << radOfView << lifeTime <<coef<< std::endl;
 		throw Exception(1);
 	}
-	prevLocation = location_;
-	
+	body = sprites->PlanktonMove;
 }
 
 
@@ -24,12 +23,10 @@ Plankton::~Plankton()
 void Plankton::update(std::list<Organism*>& organisms, coordinates sizeAqua, std::set<Organism*>& del)
 {
 	prevLocation = location;
-	body = sprites->PlanktonMove;
 	lifeTime--;
 	reproduction++;
 	if (lifeTime <= 0)
 	{
-		//died(organisms);
 		del.insert(this);
 		return;
 	}
@@ -49,16 +46,16 @@ bool Plankton::reproduce(std::list<Organism*>& organisms)
 {
 	std::list<Organism*>::iterator  choice = organisms.end();
 	int minWay=10000;
-	for (auto u = organisms.begin(); u != organisms.end(); u++)
+	for (auto org = organisms.begin(); org != organisms.end(); org++)
 	{
-		int curWay = way((*u)->getLocation());
-		if ((*u != this) & (coef == (*u)->getCoef()) & (*u)->getSex() != this->getSex()
-			&((*u)->getReprodaction() >(*u)->getPauseReprodaction()) &(radOfDisp >= curWay))
+		int curWay = way((*org)->getLocation());
+		if ((*org != this) & (coef == (*org)->getCoef()) & (*org)->getSex() != this->getSex()
+			&((*org)->getReprodaction() >(*org)->getPauseReprodaction()) &(radOfDisp >= curWay))
 		{
 			if (curWay < minWay)
 			{
 				minWay = curWay;
-				choice = u;
+				choice = org;
 			}
 		}
 	}
@@ -88,15 +85,14 @@ bool Plankton::reproduce(std::list<Organism*>& organisms)
 void Plankton::move(std::list<Organism*>& organisms, coordinates sizeAqua)
 {
 	float maxDist = 0;
-
 	std::list<Organism*> neighbors;
 	if (organisms.size() != 1)
 	{
-		for (auto u : organisms)
+		for (auto org : organisms)
 		{
-			if ((u != this) && (radOfView >= way(u->getLocation())) && (u->getCoef() == coefOfHerbivore))
+			if ((org != this) && (radOfView >= way(org->getLocation())) && (org->getCoef() == coefOfHerbivore))
 			{
-				neighbors.push_back(u);
+				neighbors.push_back(org);
 			}
 		}
 
@@ -114,10 +110,10 @@ void Plankton::move(std::list<Organism*>& organisms, coordinates sizeAqua)
 							if ((location.third + h <= sizeAqua.third) && (location.third + h >= 0))
 							{
 								int distance = 0;
-								for (auto u : neighbors)
+								for (auto neig : neighbors)
 								{
 									distance += way(coordinates(location.first + i, location.second + j,
-										location.third + h), u->getLocation());
+										location.third + h), neig->getLocation());
 								}
 								if (distance > maxDist)
 								{
@@ -129,9 +125,8 @@ void Plankton::move(std::list<Organism*>& organisms, coordinates sizeAqua)
 					}
 				}
 			}
-
-			location = newLoc;
 		}
+		location = newLoc;
 	}
 	if ((organisms.size() == 1) || (maxDist == 0))
 	{
@@ -162,7 +157,6 @@ void Plankton::move(std::list<Organism*>& organisms, coordinates sizeAqua)
 		{
 			newz = 0 - location.third;
 		}
-		location = coordinates(location.first + newx, location.second + newy, location.third + newz);
 	}
 
 }

@@ -3,21 +3,20 @@
 Organism::Organism(coordinates location_, int radOfDisp_, int radOfView_,
 	int lifeTime_, int pauseReprodaction_, int coef_,bool sex_, Sprites* sprites_)
 	: lifeTime(lifeTime_), radOfDisp(radOfDisp_), radOfView(radOfView_), sprites(sprites_),
-	pauseReprodaction(pauseReprodaction_), reproduction(0), coef(coef_),sex(sex_),location(location_)
-{
-	//body = new sf::Sprite;
-};
+	pauseReprodaction(pauseReprodaction_), reproduction(0), coef(coef_),sex(sex_),location(location_),
+	prevLocation(location_)
+{};
 
 
 
 Organism::~Organism()
-{
-	//delete this;
-}
+{}
+
 bool Organism::getSex()const
 {
 	return sex;
 }
+
 void Organism::reproductionUp()
 {
 	reproduction = 0;
@@ -47,14 +46,17 @@ sf::Sprite Organism::getSprite() const
 {
 	return body;
 }
+
 coordinates Organism::getPrevLocation()const
 {
 	return prevLocation;
 }
+
 void Organism::setLocation(coordinates loc)
 {
 	location = loc;
 }
+
 void Organism::setPrevLocation(coordinates loc)
 {
 	prevLocation = loc;
@@ -71,14 +73,14 @@ void Organism::setPrevLocation(coordinates loc)
 //	}
 //}
 
-int Organism::way(coordinates neighbors)
+int Organism::way(coordinates neighbors) const
 {
 	return sqrt((neighbors.first - location.first)*(neighbors.first - location.first)
 		+ (neighbors.second - location.second)*(neighbors.second - location.second)
 		+ (neighbors.third - location.third)*(neighbors.third - location.third));
 }
 
-int Organism::way(coordinates this_, coordinates neighbors)
+int Organism::way(coordinates this_, coordinates neighbors) const
 {
 	return sqrt((neighbors.first - this_.first)*(neighbors.first - this_.first)
 		+ (neighbors.second - this_.second)*(neighbors.second - this_.second)

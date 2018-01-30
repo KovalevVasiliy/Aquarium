@@ -1,21 +1,20 @@
 #include "Herbivore.h"
-
-
+#include <iostream>
 
 Herbivore::Herbivore(coordinates location_, int radOfDisp_, int radOfview_,
 	int lifeTime_, int eatTime_, bool sex_,Sprites* sprites_) :Fish(location_, radOfDisp_, radOfview_,
-		lifeTime_, eatTime_, 6, coefOfHerbivore,sex_,sprites_)
+		lifeTime_, eatTime_, pauseReprOfHerbivore, coefOfHerbivore,sex_,sprites_)
 {
-	if ((radOfView> radOfViewHerbivore + radOfViewHerbivoreDelta) || (radOfView < radOfViewHerbivore - radOfViewHerbivoreDelta) ||
-		(radOfDisp> radOfDispHerbivore + radOfDispHerbivoreDelta) || (radOfDisp < radOfDispHerbivore - radOfDispHerbivoreDelta) ||
-		(lifeTime>lifeTimeHerbivore + lifeTimeHerbivoreDelta) || (lifeTime < lifeTimeHerbivore - lifeTimeHerbivoreDelta) ||
-		(eatTime> eatTimeHerbivore + eatTimeHerbivoreDelta) || (eatTime < eatTimeHerbivore - eatTimeHerbivoreDelta) ||
+	if ((radOfView> radOfViewHerbivore + radOfViewHerbivoreDelta) || (radOfView < radOfViewHerbivore) ||
+		(radOfDisp> radOfDispHerbivore + radOfDispHerbivoreDelta) || (radOfDisp < radOfDispHerbivore) ||
+		(lifeTime>lifeTimeHerbivore + lifeTimeHerbivoreDelta) || (lifeTime < lifeTimeHerbivore) ||
+		(eatTime> eatTimeHerbivore + eatTimeHerbivoreDelta) || (eatTime < eatTimeHerbivore) ||
 		(radOfDisp > radOfView))
 	{
 		std::cout << radOfDisp << radOfView << lifeTime << coef << std::endl;
 		throw Exception(1);
 	}
-	prevLocation = location_;
+	body = sprites->HerbivoreMove;
 }
 
 
@@ -25,13 +24,11 @@ Herbivore::~Herbivore()
 void Herbivore::update(std::list<Organism*>& organisms, coordinates sizeAqua, std::set<Organism*>& del)
 {
 	prevLocation = location;
-	body = sprites->HerbivoreMove;
 	lifeTime--;
 	starvation--;
 	reproduction++;
 	if (starvation <= 0 || lifeTime <= 0)
 	{
-		//died(organisms);
 		del.insert(this);
 		return;
 	}
@@ -59,14 +56,15 @@ bool Herbivore::eat(std::list<Organism*>& organisms, std::set<Organism*>& del)
 {
 	Organism* choice = nullptr;
 	int minWay = 10000;
-	for (auto u = organisms.begin();u!=organisms.end();u++)
+	for (auto org = organisms.begin(); org !=organisms.end(); org++)
 	{
-		if (((*u)->getCoef() == coefOfPlancton) && (*u != this))
+		if (((*org)->getCoef() == coefOfPlancton) && (*org != this))
 		{
-			if (radOfDisp >= way((*u)->getLocation()) && way((*u)->getLocation()) < minWay)
+			int curWay = way((*org)->getLocation());
+			if (radOfDisp >= curWay && curWay < minWay)
 			{
-				minWay = way((*u)->getLocation());
-				choice = *u;
+				minWay = curWay;
+				choice = *org;
 			}
 		}
 	}
@@ -75,7 +73,6 @@ bool Herbivore::eat(std::list<Organism*>& organisms, std::set<Organism*>& del)
 		location = (choice)->getLocation();
 		starvation = eatTime;
 		del.insert(choice);
-		//(*choice)->died(organisms);
 		return true;
 	}
 	else
@@ -88,16 +85,16 @@ bool Herbivore::reproduce(std::list<Organism*>& organisms)
 {
 	std::list<Organism*>::iterator  choice = organisms.end();
 	int minWay = 10000;
-	for (auto u = organisms.begin(); u != organisms.end(); u++)
+	for (auto org = organisms.begin(); org != organisms.end(); org++)
 	{
-		int curWay = way((*u)->getLocation());
-		if ((*u != this) & (coef == (*u)->getCoef()) & (*u)->getSex() != this->getSex()
-			&((*u)->getReprodaction() >(*u)->getPauseReprodaction()) &(radOfDisp >= curWay))
+		int curWay = way((*org)->getLocation());
+		if ((*org != this) & (coef == (*org)->getCoef()) & (*org)->getSex() != this->getSex()
+			&((*org)->getReprodaction() >(*org)->getPauseReprodaction()) &(radOfDisp >= curWay))
 		{
 			if (curWay < minWay)
 			{
 				minWay = curWay;
-				choice = u;
+				choice = org;
 			}
 		}
 	}
@@ -132,11 +129,11 @@ void Herbivore::move(std::list<Organism*>& organisms, coordinates sizeAqua)
 	std::list<Organism*> neighbors;
 	if (organisms.size() != 1)
 	{
-		for (auto u : organisms)
+		for (auto org : organisms)
 		{
-			if ((u != this) && (radOfView >= way(u->getLocation())) && (u->getCoef() == coefOfPredator))
+			if ((org != this) && (radOfView >= way(org->getLocation())) && (org->getCoef() == coefOfPredator))
 			{
-				neighbors.push_back(u);
+				neighbors.push_back(org);
 			}
 		}
 
@@ -154,10 +151,10 @@ void Herbivore::move(std::list<Organism*>& organisms, coordinates sizeAqua)
 							if ((location.third + h <= sizeAqua.third) && (location.third + h >= 0))
 							{
 								float distance = 0;
-								for (auto u : neighbors)
+								for (auto neig : neighbors)
 								{
 									distance += way(coordinates(location.first + i, location.second + j,
-										location.third + h), u->getLocation());
+										location.third + h), neig->getLocation());
 								}
 								if (distance > maxDist)
 								{
@@ -169,10 +166,10 @@ void Herbivore::move(std::list<Organism*>& organisms, coordinates sizeAqua)
 					}
 				}
 			}
-
-			location = newLoc;
 		}
+		location = newLoc;
 	}
+
 	if ((organisms.size() == 1) || (maxDist == 0))
 	{
 		int newx = rand() % radOfDisp - radOfDisp + rand() % radOfDisp;

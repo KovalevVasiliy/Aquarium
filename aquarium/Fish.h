@@ -10,9 +10,8 @@ public:
 	Fish(coordinates location_, int radOfDisp_, int radOfview_,	int lifeTime_,
 		int eatTime_, int pauseReprodaction_, int coef_,bool sex_, Sprites* sprites_);
 	virtual ~Fish();
-	//virtual void update(std::vector<Organism*>& organisms, coordinates sizeAqua) = 0;
-	virtual bool eat(std::list<Organism*>& organisms, std::set<Organism*>& del) = 0;
 protected:
+	virtual bool eat(std::list<Organism*>& organisms, std::set<Organism*>& del) = 0;
 	const int eatTime;
 	int starvation;
 };

@@ -19,7 +19,7 @@ public:
 	virtual ~Predator();
 	virtual void update(std::list<Organism*>& organisms, coordinates sizeAqua, std::set<Organism*>& del) override;
 private:
-	bool eat(std::list<Organism*>& organisms, std::set<Organism*>& del) override;
+	virtual bool eat(std::list<Organism*>& organisms, std::set<Organism*>& del) override;
 	virtual bool reproduce(std::list<Organism*>& organisms) override;
 	virtual void move(std::list<Organism*>& organisms, coordinates sizeAqua) override;
 };

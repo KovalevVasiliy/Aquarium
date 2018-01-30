@@ -1,21 +1,21 @@
 #include "Predator.h"
-
+#include <iostream>
 
 
 Predator::Predator(coordinates location_, int radOfDisp_, int radOfview_,
 	int lifeTime_, int eatTime_, bool sex_,Sprites* sprites_) :Fish(location_, radOfDisp_, radOfview_,
-		lifeTime_, eatTime_, 6, coefOfPredator,sex_, sprites_)
+		lifeTime_, eatTime_, pauseReprOfPredator, coefOfPredator,sex_, sprites_)
 {
-	if ((radOfView > radOfViewPredator + radOfViewPredatorDelta) || (radOfView < radOfViewPredator - radOfViewPredatorDelta) ||
-		(radOfDisp> radOfDispPredator + radOfDispPredatorDelta) || (radOfDisp < radOfDispPredator - radOfDispPredatorDelta) ||
-		(lifeTime>lifeTimePredator + lifeTimePredatorDelta) || (lifeTime < lifeTimePredator - lifeTimePredatorDelta) ||
-		(eatTime>eatTimePredator + eatTimePredatorDelta) || (eatTime < eatTimePredator - eatTimePredatorDelta) ||
+	if ((radOfView > radOfViewPredator + radOfViewPredatorDelta) || (radOfView < radOfViewPredator) ||
+		(radOfDisp> radOfDispPredator + radOfDispPredatorDelta) || (radOfDisp < radOfDispPredator) ||
+		(lifeTime>lifeTimePredator + lifeTimePredatorDelta) || (lifeTime < lifeTimePredator) ||
+		(eatTime>eatTimePredator + eatTimePredatorDelta) || (eatTime < eatTimePredator) ||
 		(radOfDisp > radOfView))
 	{
 		std::cout << radOfDisp << radOfView << lifeTime << coef << std::endl;
 		throw Exception(1);
 	}
-	prevLocation = location_;
+	body = sprites->PredatorMove;
 }
 
 
@@ -25,13 +25,11 @@ Predator::~Predator()
 void Predator::update(std::list<Organism*>& organisms, coordinates sizeAqua, std::set<Organism*>& del)
 {
 	prevLocation = location;
-	body = sprites->PredatorMove;
 	lifeTime--;
 	starvation--;
 	reproduction++;
 	if (starvation == 0 || lifeTime <= 0)
 	{
-		//died(organisms);
 		del.insert(this);
 		return;
 	}
@@ -59,14 +57,15 @@ bool Predator::eat(std::list<Organism*>& organisms, std::set<Organism*>& del)
 {
 	Organism*  choice = nullptr;
 	int minWay = 10000;
-	for (auto u = organisms.begin(); u != organisms.end(); u++)
+	for (auto org = organisms.begin(); org != organisms.end(); org++)
 	{
-		if (((*u)->getCoef() == coefOfHerbivore) && (*u != this))
+		if (((*org)->getCoef() == coefOfHerbivore) && (*org != this))
 		{
-			if (radOfDisp >= way((*u)->getLocation()) && way((*u)->getLocation()) < minWay)
+			int curWay=way((*org)->getLocation());
+			if (radOfDisp >= curWay && curWay < minWay)
 			{
-				minWay = way((*u)->getLocation());
-				choice = *u;
+				minWay = curWay;
+				choice = *org;
 			}
 		}
 	}
@@ -74,7 +73,6 @@ bool Predator::eat(std::list<Organism*>& organisms, std::set<Organism*>& del)
 	{
 		location = (choice)->getLocation();
 		starvation = eatTime;
-		//(*choice)->died(organisms);
 		del.insert(choice);
 		return true;
 	}
@@ -88,16 +86,16 @@ bool Predator::reproduce(std::list<Organism*>& organisms)
 {
 	std::list<Organism*>::iterator  choice = organisms.end();
 	int minWay = 10000;
-	for (auto u = organisms.begin(); u != organisms.end(); u++)
+	for (auto org = organisms.begin(); org != organisms.end(); org++)
 	{
-		int curWay = way((*u)->getLocation());
-		if ((*u != this) & (coef == (*u)->getCoef()) & (*u)->getSex() != this->getSex()
-			&((*u)->getReprodaction() >(*u)->getPauseReprodaction()) &(radOfDisp >= curWay))
+		int curWay = way((*org)->getLocation());
+		if ((*org != this) & (coef == (*org)->getCoef()) & (*org)->getSex() != this->getSex()
+			&((*org)->getReprodaction() >(*org)->getPauseReprodaction()) &(radOfDisp >= curWay))
 		{
 			if (curWay < minWay)
 			{
 				minWay = curWay;
-				choice = u;
+				choice = org;
 			}
 		}
 	}
@@ -132,14 +130,13 @@ void Predator::move(std::list<Organism*>& organisms, coordinates sizeAqua)
 	std::list<Organism*> neighbors;
 	if (organisms.size() != 1)
 	{
-		for (auto u : organisms)
+		for (auto org : organisms)
 		{
-			if ((u != this) && (radOfView >= way(u->getLocation())) && (u->getCoef() == coefOfHerbivore))
+			if ((org != this) && (radOfView >= way(org->getLocation())) && (org->getCoef() == coefOfHerbivore))
 			{
-				neighbors.push_back(u);
+				neighbors.push_back(org);
 			}
 		}
-
 		coordinates newLoc(location.first, location.second,location.third);
 		for (int i = (-1)*radOfDisp; i <= radOfDisp; i++)
 		{
@@ -154,10 +151,10 @@ void Predator::move(std::list<Organism*>& organisms, coordinates sizeAqua)
 							if ((location.third + h <= sizeAqua.third) && (location.third + h >= 0))
 							{
 								int distance = 0;
-								for (auto u : neighbors)
+								for (auto neig : neighbors)
 								{
 									distance += way(coordinates(location.first+i,location.second+j,
-										location.third+h),u->getLocation());
+										location.third+h), neig->getLocation());
 								}
 								if (distance < minDist)
 								{
@@ -169,9 +166,8 @@ void Predator::move(std::list<Organism*>& organisms, coordinates sizeAqua)
 					}
 				}
 			}
-
-			location = newLoc;
 		}
+		location = newLoc;
 	}
 	if ((organisms.size() == 1) || (minDist == sizeAqua.first*sizeAqua.second*sizeAqua.third))
 	{

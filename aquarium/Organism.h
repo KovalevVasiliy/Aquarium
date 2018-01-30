@@ -5,10 +5,8 @@
 #include "Constants.h"
 #include "Sprites.h"
 #include "coordinates.h"
-//#include <SFML\Graphics.hpp>
 #include <list>
 #include <cstdlib>
-#include <iostream>
 #include <set>
 
 
@@ -20,7 +18,6 @@ public:
 	virtual ~Organism();
 	virtual void update(std::list<Organism*>& organisms, coordinates sizeAqua, std::set<Organism*>& del) = 0;
 	virtual void move(std::list<Organism*>& organisms, coordinates sizeAqua) = 0;
-	//void died(std::list<Organism*>& organisms);
 	void reproductionUp();
 	int getCoef() const;
 	int getReprodaction() const;
@@ -32,10 +29,9 @@ public:
 	void setLocation(coordinates loc);
 	void setPrevLocation(coordinates loc);
 protected:
-	double speed;
 	sf::Sprite body;
-	int way(coordinates neighbors);
-	int way(coordinates this_,coordinates neighbors);
+	int way(coordinates neighbors) const;
+	int way(coordinates this_,coordinates neighbors) const;
 	virtual bool reproduce(std::list<Organism*>& organisms) = 0;
 	int lifeTime;
 	int reproduction;
